@@ -131,7 +131,7 @@ app.get('/:bankUUID/', (req, res) => {
   return res
     .status(303)
     .redirect(
-      `${env.STATUS_SERVER_URL}/pro-setup?url=${encodeURIComponent(`https://${hostname}${req.originalUrl}`)}`,
+      `https://app.upsignon.eu/pro-setup?url=${encodeURIComponent(`https://${hostname}${req.originalUrl}`)}`,
     );
 });
 // API 2
