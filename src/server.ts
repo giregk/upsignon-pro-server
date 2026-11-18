@@ -11,6 +11,7 @@ import { startServer } from './helpers/serverProcess';
 import env from './helpers/env';
 import { logInfo, sanitizeUrlForLogs } from './helpers/logger';
 import { runMigrations } from './helpers/runMigrations';
+import { browserExtensionCors } from './helpers/browserExtensionCors';
 
 import { getBankConfig } from './api2/routes/bank/getBankConfig';
 import { getUrlList2 } from './api2/routes/bank/getUrlList';
@@ -118,6 +119,9 @@ if (!env.SESSION_SECRET) {
   process.exit(1);
 }
 SessionStore.init();
+
+// Browser extensions (Chrome, Edge, Firefox, Safari): only the published ones in production
+app.use(browserExtensionCors(env.IS_PRODUCTION));
 
 app.use((req, res, next) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
