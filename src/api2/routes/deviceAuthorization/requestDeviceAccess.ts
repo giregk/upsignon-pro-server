@@ -112,7 +112,11 @@ export const requestDeviceAccess2 = async (req: Request, res: Response) => {
     if (!deviceInDb) {
       // IF DEVICE DOES NOT YET EXIST, CHECK PLATFORM
       const userAllowedOnPlatform = isAllowedOnPlatform(
-        safeBody.osFamily + safeBody.osNameAndVersion + safeBody.deviceType,
+        {
+          osFamily: safeBody.osFamily,
+          osNameAndVersion: safeBody.osNameAndVersion,
+          deviceType: safeBody.deviceType,
+        },
         userRes.rows[0].bank_settings as BANK_SETTINGS,
         userRes.rows[0].settings_override as USER_SETTINGS_OVERRIDE,
       );

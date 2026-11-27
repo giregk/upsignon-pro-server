@@ -1,5 +1,18 @@
 import { BANK_SETTINGS, USER_SETTINGS_OVERRIDE } from './getDefaultSettingOrUserOverride';
 
+export type PlatformInfo = {
+  osFamily: string;
+  osNameAndVersion: string;
+  deviceType: string;
+};
+
+// The web app sends osFamily = "web" and its osNameAndVersion is the browser user agent,
+// which may contain "Windows", "Android", "Mac"...
+// => it must be detected from osFamily alone, before any other platform.
+const isWeb = (osFamily: string) => {
+  return osFamily.toLowerCase() === 'web';
+};
+
 const isWindows = (osFamily: string) => {
   if (osFamily.toLowerCase().indexOf('win32') >= 0) {
     // deprecated check
@@ -52,11 +65,17 @@ const _settingResultForUser = (
 };
 
 export const isAllowedOnPlatform = (
-  osFamily: string,
+  platformInfo: PlatformInfo,
   bankSettings: BANK_SETTINGS,
   userSettings: USER_SETTINGS_OVERRIDE,
 ): boolean => {
   const defaultAllowed = true;
+  if (isWeb(platformInfo.osFamily)) {
+    return _settingResultForUser(bankSettings, userSettings, 'ALLOWED_WEB', defaultAllowed);
+  }
+  // Older app versions did not send osFamily (or sent a legacy value), the platform name could be
+  // in any of the 3 fields => look into all of them.
+  const osFamily = `${platformInfo.osFamily} ${platformInfo.osNameAndVersion} ${platformInfo.deviceType}`;
   if (isWindows(osFamily)) {
     return _settingResultForUser(bankSettings, userSettings, 'ALLOWED_WINDOWS', defaultAllowed);
   } else if (isIos(osFamily)) {
@@ -68,7 +87,6 @@ export const isAllowedOnPlatform = (
   } else if (isLinux(osFamily)) {
     return _settingResultForUser(bankSettings, userSettings, 'ALLOWED_LINUX', defaultAllowed);
   } else {
-    // TODO(web): handle web platforms specifically if needed
     console.error('isAllowedOnPlatform - unknown osFamily: ', osFamily);
     return false;
   }

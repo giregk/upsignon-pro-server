@@ -7,6 +7,7 @@ export type BANK_SETTINGS = {
   ALLOWED_ANDROID?: boolean | null;
   ALLOWED_MACOS?: boolean | null;
   ALLOWED_LINUX?: boolean | null;
+  ALLOWED_WEB?: boolean | null;
   DEFAULT_AUTOLOCK_DELAY_DESKTOP?: number;
   MAX_AUTOLOCK_DELAY_DESKTOP?: number;
   DEFAULT_AUTOLOCK_DELAY_MOBILE?: number;
@@ -25,6 +26,7 @@ export type USER_SETTINGS_OVERRIDE = {
   ALLOWED_ANDROID?: boolean | null;
   ALLOWED_MACOS?: boolean | null;
   ALLOWED_LINUX?: boolean | null;
+  ALLOWED_WEB?: boolean | null;
 };
 
 type RESULTING_USER_SETTINGS = {
